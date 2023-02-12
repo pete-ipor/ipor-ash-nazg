@@ -25,7 +25,7 @@ contract Session {
                 }
             }
             (bool success, bytes memory ret) = calls[i].target.call(newCallData);
-            require(success, "Multicall aggregate: call failed");
+            require(success, "Multicall session failed");
             returnData[i] = ret;
             sessionUser = address(0);
         }
