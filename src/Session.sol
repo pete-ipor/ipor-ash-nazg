@@ -18,14 +18,9 @@ contract Session {
         for (uint256 i; i < callsNumber; ++i) {
             bytes32 addressFromRequest = bytes32(calls[i].callData[4 : 36]);
             require(addressFromRequest == bytes32(0x00), "should be zero address");
-            uint256 length = calls[i].callData.length;
-            bytes memory newCallData = new bytes(length);
-            for (uint256 j; j < length; ++j) {
-                if (j >= 16 && j < 36) {
-                    newCallData[j] = senderAddressBytes[j - 16];
-                } else {
-                    newCallData[j] = calls[i].callData[j];
-                }
+            bytes memory newCallData = calls[i].callData;
+            for (uint256 j = 16; j < 36; ++j) {
+                newCallData[j] = senderAddressBytes[j - 16];
             }
             (bool success, bytes memory ret) = calls[i].target.call(newCallData);
             require(success, "Multicall session failed");
