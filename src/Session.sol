@@ -1,16 +1,12 @@
 pragma solidity 0.8.17;
 
 contract Session {
-
-    address public sessionUser;
-
     struct Call {
         address target;
         bytes callData;
     }
 
     function startSession(Call[] calldata calls) public returns (uint256 blockNumber, bytes[] memory returnData) {
-        sessionUser = msg.sender;
         blockNumber = block.number;
         uint256 callsNumber = calls.length;
         returnData = new bytes[](callsNumber);
@@ -26,7 +22,6 @@ contract Session {
             require(success, "Multicall session failed");
             returnData[i] = ret;
         }
-        sessionUser = address(0);
     }
 
     function _senderToBytes(address sender) internal pure returns (bytes32) {

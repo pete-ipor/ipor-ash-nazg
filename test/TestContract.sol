@@ -10,4 +10,12 @@ contract TestContract {
     function getSenderAddressAndNumber(address sender, uint256 number) public returns (address, uint256) {
         return (sender, number);
     }
+
+    function getSenderAddressAndNumberAndAddress(address sender, uint256 number, address account) public returns (address, uint256) {
+        return (sender, number);
+    }
+    function getSenderAddressAndNumberAndArrayOfNumber(address sender, uint256 number, uint256[] calldata numbers) public returns (address, uint256) {
+        return (sender, number);
+    }
+
 }
