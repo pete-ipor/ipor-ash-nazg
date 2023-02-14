@@ -37,7 +37,7 @@ contract SessionTest is Test {
         bytes memory callData = abi.encodeWithSignature(
             "getSenderAddressAndNumber(address,uint256)",
             address(0),
-                initNumber
+            initNumber
         );
         Session.Call[] memory calls = new Session.Call[](1);
         calls[0] = Session.Call(address(testContract), callData);
@@ -60,13 +60,12 @@ contract SessionTest is Test {
         bytes memory callData = abi.encodeWithSignature(
             "getSenderAddressAndNumberAndArrayOfNumber(address,uint256,uint256[])",
             address(0),
-                initNumber,
-                numbers
+            initNumber,
+            numbers
 
         );
         Session.Call[] memory calls = new Session.Call[](1);
         calls[0] = Session.Call(address(testContract), callData);
-
 
 
         // when
@@ -84,13 +83,12 @@ contract SessionTest is Test {
         bytes memory callData = abi.encodeWithSignature(
             "getSenderAddressAndNumberAndAddress(address,uint256,address)",
             address(0),
-                initNumber,
-                address(this)
+            initNumber,
+            address(this)
 
         );
         Session.Call[] memory calls = new Session.Call[](1);
         calls[0] = Session.Call(address(testContract), callData);
-
 
 
         // when
@@ -108,8 +106,8 @@ contract SessionTest is Test {
         bytes memory callData1 = abi.encodeWithSignature(
             "getSenderAddressAndNumberAndAddress(address,uint256,address)",
             address(0),
-                initNumber,
-                address(this)
+            initNumber,
+            address(this)
 
         );
         bytes memory callData2 = abi.encodeWithSignature(
@@ -135,6 +133,4 @@ contract SessionTest is Test {
         assertEq(sender, address(this));
         assertEq(number, initNumber);
     }
-
-
 }

@@ -10,21 +10,15 @@ contract Session {
         blockNumber = block.number;
         uint256 callsNumber = calls.length;
         returnData = new bytes[](callsNumber);
-        bytes32 senderAddressBytes = _senderToBytes(msg.sender);
+        bytes32 senderAddressBytes = bytes32(abi.encodePacked(msg.sender));
         for (uint256 i; i < callsNumber; ++i) {
-            bytes32 addressFromRequest = bytes32(calls[i].callData[4 : 36]);
-            require(addressFromRequest == bytes32(0x00), "should be zero address");
             bytes memory newCallData = calls[i].callData;
-            for (uint256 j = 16; j < 36; ++j) {
-                newCallData[j] = senderAddressBytes[j - 16];
+            assembly {
+                mstore(add(newCallData, 48), or(and(mload(add(newCallData, 48)), not(shl(212, 0xFFFFFFFF))), senderAddressBytes))
             }
             (bool success, bytes memory ret) = calls[i].target.call(newCallData);
             require(success, "Multicall session failed");
             returnData[i] = ret;
         }
-    }
-
-    function _senderToBytes(address sender) internal pure returns (bytes32) {
-        return bytes32(abi.encodePacked(sender));
     }
 }
