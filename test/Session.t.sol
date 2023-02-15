@@ -44,7 +44,7 @@ contract SessionTest is Test {
         console2.log("sendAddress", sendAddress);
         console.logBytes(callData);
         // when
-        vm.expectRevert("should be zero address");
+        vm.expectRevert("Address pass as first parameter should be zero address");
         (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
 
     }
@@ -170,6 +170,20 @@ contract SessionTest is Test {
         (address sender, uint256 number) = abi.decode(returnData[0], (address, uint256));
         assertEq(sender, address(this));
         assertEq(number, initNumber);
+    }
+
+    function testShouldRevertWhenExternalContractCallRevert() public {
+        // given
+        bytes memory callData = abi.encodeWithSignature(
+            "revertWhenCalled(address)",
+            address(0)
+        );
+        Session.Call[] memory calls = new Session.Call[](1);
+        calls[0] = Session.Call(address(testContract), callData);
+
+        // when
+        vm.expectRevert("Multicall session failed");
+        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
     }
 
     function _getUserAddress(uint256 number) internal returns (address) {

@@ -17,5 +17,8 @@ contract TestContract {
     function getSenderAddressAndNumberAndArrayOfNumber(address sender, uint256 number, uint256[] calldata numbers) public returns (address, uint256) {
         return (sender, number);
     }
+    function revertWhenCalled(address sender ) public returns (address, uint256) {
+        require(sender == address(0), "Address should be zero address");
+    }
 
 }
