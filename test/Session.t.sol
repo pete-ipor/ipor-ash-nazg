@@ -31,9 +31,47 @@ contract SessionTest is Test {
         assertEq(sender, address(this));
     }
 
+    function testShouldRejectWhenNoTZeroAddressWasSend() public {
+        // given
+        address sendAddress = _getUserAddress(1);
+        bytes memory callData = abi.encodeWithSignature(
+            "getSenderAddress(address)",
+            sendAddress
+        );
+        Session.Call[] memory calls = new Session.Call[](1);
+        calls[0] = Session.Call(address(testContract), callData);
+
+        console2.log("sendAddress", sendAddress);
+        console.logBytes(callData);
+        // when
+        vm.expectRevert("should be zero address");
+        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+
+    }
+
     function testShouldReturnSenderAddressAndNumber() public {
         // given
         uint256 initNumber = 123;
+        bytes memory callData = abi.encodeWithSignature(
+            "getSenderAddressAndNumber(address,uint256)",
+            address(0),
+            initNumber
+        );
+        Session.Call[] memory calls = new Session.Call[](1);
+        calls[0] = Session.Call(address(testContract), callData);
+        // when
+        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+
+        // then
+        (address sender, uint256 number) = abi.decode(returnData[0], (address, uint256));
+        assertEq(sender, address(this));
+        assertEq(number, initNumber);
+    }
+
+    function testShouldReturnSenderAddressAndMaxUint256() public {
+        // given
+        uint256 initNumber = type(uint256).max;
+
         bytes memory callData = abi.encodeWithSignature(
             "getSenderAddressAndNumber(address,uint256)",
             address(0),
@@ -132,5 +170,9 @@ contract SessionTest is Test {
         (address sender, uint256 number) = abi.decode(returnData[0], (address, uint256));
         assertEq(sender, address(this));
         assertEq(number, initNumber);
+    }
+
+    function _getUserAddress(uint256 number) internal returns (address) {
+        return vm.rememberKey(number);
     }
 }

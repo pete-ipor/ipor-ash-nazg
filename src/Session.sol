@@ -13,6 +13,8 @@ contract Session {
         bytes32 senderAddressBytes = bytes32(abi.encodePacked(msg.sender));
         for (uint256 i; i < callsNumber; ++i) {
             bytes memory newCallData = calls[i].callData;
+            bytes32 addressFromRequest = bytes32(calls[i].callData[4 : 36]);
+            require(addressFromRequest == bytes32(0x00), "should be zero address");
             assembly {
                 mstore(add(newCallData, 48), or(and(mload(add(newCallData, 48)), not(shl(212, 0xFFFFFFFF))), senderAddressBytes))
             }
