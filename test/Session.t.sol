@@ -24,7 +24,7 @@ contract SessionTest is Test {
         calls[0] = Session.Call(address(testContract), callData);
 
         // when
-        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+        bytes[] memory returnData = session.startSession(calls);
 
         // then
         address sender = abi.decode(returnData[0], (address));
@@ -45,7 +45,7 @@ contract SessionTest is Test {
         console.logBytes(callData);
         // when
         vm.expectRevert("Address pass as first parameter should be zero address");
-        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+        bytes[] memory returnData = session.startSession(calls);
 
     }
 
@@ -60,7 +60,7 @@ contract SessionTest is Test {
         Session.Call[] memory calls = new Session.Call[](1);
         calls[0] = Session.Call(address(testContract), callData);
         // when
-        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+        bytes[] memory returnData = session.startSession(calls);
 
         // then
         (address sender, uint256 number) = abi.decode(returnData[0], (address, uint256));
@@ -81,7 +81,7 @@ contract SessionTest is Test {
         calls[0] = Session.Call(address(testContract), callData);
 
         // when
-        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+        bytes[] memory returnData = session.startSession(calls);
 
         // then
         (address sender, uint256 number) = abi.decode(returnData[0], (address, uint256));
@@ -107,7 +107,7 @@ contract SessionTest is Test {
 
 
         // when
-        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+        bytes[] memory returnData = session.startSession(calls);
 
         // then
         (address sender, uint256 number) = abi.decode(returnData[0], (address, uint256));
@@ -130,7 +130,7 @@ contract SessionTest is Test {
 
 
         // when
-        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+        bytes[] memory returnData = session.startSession(calls);
 
         // then
         (address sender, uint256 number) = abi.decode(returnData[0], (address, uint256));
@@ -164,7 +164,7 @@ contract SessionTest is Test {
         calls[2] = Session.Call(address(testContract), callData3);
 
         // when
-        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+        bytes[] memory returnData = session.startSession(calls);
 
         // then
         (address sender, uint256 number) = abi.decode(returnData[0], (address, uint256));
@@ -183,7 +183,7 @@ contract SessionTest is Test {
 
         // when
         vm.expectRevert("Multicall session failed");
-        (uint256 blockNumber, bytes[] memory returnData) = session.startSession(calls);
+         bytes[] memory returnData = session.startSession(calls);
     }
 
     function _getUserAddress(uint256 number) internal returns (address) {

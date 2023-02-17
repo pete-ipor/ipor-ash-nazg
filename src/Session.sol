@@ -7,25 +7,22 @@ contract Session {
         bytes callData;
     }
 
-    /// @notice Method run multiple calls in one transaction, and pass msg.sender as first argument in each call
-    /// @param calls list of calls with target contract address and call data
-    /// @return blockNumber block number of transaction and returnData list of return data from each call
-    function startSession(Call[] calldata calls) external returns (uint256 blockNumber, bytes[] memory returnData) {
-        blockNumber = block.number;
+
+    function startSession(Call[] calldata calls) external returns (bytes[] memory returnData) {
         uint256 callsNumber = calls.length;
         returnData = new bytes[](callsNumber);
         bytes32 senderAddressBytes = bytes32(abi.encodePacked(msg.sender));
+        bool success;
+        bytes memory newCallData;
 
         for (uint256 i; i < callsNumber; ++i) {
-            bytes memory newCallData = calls[i].callData;
-            bytes32 addressFromRequest = bytes32(calls[i].callData[4 : 36]);
-            require(addressFromRequest == bytes32(0x00), "Address pass as first parameter should be zero address");
+            newCallData = calls[i].callData;
+            require(bytes32(calls[i].callData[4 : 36]) == bytes32(0x00), "Address pass as first parameter should be zero address");
             assembly {
                 mstore(add(newCallData, 48), or(and(mload(add(newCallData, 48)), not(shl(212, 0xFFFFFFFF))), senderAddressBytes))
             }
-            (bool success, bytes memory ret) = calls[i].target.call(newCallData);
+            (success, returnData[i]) = calls[i].target.call(newCallData);
             require(success, "Multicall session failed");
-            returnData[i] = ret;
         }
     }
 
